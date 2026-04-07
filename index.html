@@ -1,336 +1,86 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全方位數感與實用百寶箱</title>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #34495e;
-            --accent-color: #3498db;
-            --bg-color: #f4f7f6;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-        }
-        body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang TC', '微軟正黑體', sans-serif;
-            line-height: 1.6;
-            color: var(--primary-color);
-            background-color: var(--bg-color);
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 10px;
-        }
-        
-        /* 頁籤系統設計 */
-        .tabs {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        .tab-btn {
-            background-color: #e0e6ed;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            color: var(--primary-color);
-            transition: 0.3s;
-        }
-        .tab-btn.active, .tab-btn:hover {
-            background-color: var(--accent-color);
-            color: white;
-        }
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* 內容區塊與表格 */
-        .card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 30px;
-            overflow-x: auto;
-        }
-        h2 {
-            color: var(--secondary-color);
-            margin-top: 0;
-            border-left: 4px solid var(--accent-color);
-            padding-left: 10px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-        
-        /* 控制面板按鈕 */
-        .controls {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .btn {
-            padding: 8px 16px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            background-color: var(--warning-color);
-            color: white;
-            font-weight: bold;
-        }
-        .btn:hover { opacity: 0.9; }
-
-        /* 單字卡遮罩功能 */
-        .mask-mode .answer {
-            color: transparent;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .mask-mode .answer:hover {
-            color: var(--primary-color);
-            text-shadow: none;
-        }
-
-        /* 互動小工具區 */
-        .interactive-box {
-            background-color: #e8f4f8;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin-top: 15px;
-        }
-        input[type="text"], input[type="date"] {
-            padding: 8px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        #quiz-result, #calc-result {
-            font-weight: bold;
-            margin-top: 10px;
-            color: var(--accent-color);
-        }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media print {
-            .tabs, .controls, .interactive-box { display: none; }
-            .tab-content { display: block !important; }
-            .card { box-shadow: none; border: 1px solid #eee; page-break-inside: avoid; }
-        }
-        @media (max-width: 600px) {
-            .grid-2 { grid-template-columns: 1fr; }
-        }
-    </style>
-</head>
-<body>
-
-    <h1>🚀 全方位數感與實用百寶箱</h1>
-    
-    <div class="controls">
-        <button class="btn" onclick="toggleMask()">👁️ 開啟/關閉答案遮罩 (單字卡模式)</button>
-        <button class="btn" style="background-color: var(--primary-color);" onclick="window.print()">🖨️ 列印所有表格</button>
-    </div>
-
-    <div class="tabs">
-        <button class="tab-btn active" onclick="openTab('basic')">🌱 基礎學習區</button>
-        <button class="tab-btn" onclick="openTab('finance')">💰 理財與轉換</button>
-        <button class="tab-btn" onclick="openTab('pro')">🔬 科學與專業工具</button>
-    </div>
-
-    <div id="basic" class="tab-content active">
-        <div class="card">
-            <h2>1. 基礎加減：湊 10 與湊 100</h2>
-            <table>
-                <tr><th>湊 10 組合</th><th>湊 100 (整十)</th><th>湊 100 (尾數 5)</th></tr>
-                <tr><td>1 + 9 = <span class="answer">10</span></td><td>10 + 90 = <span class="answer">100</span></td><td>15 + 85 = <span class="answer">100</span></td></tr>
-                <tr><td>2 + 8 = <span class="answer">10</span></td><td>20 + 80 = <span class="answer">100</span></td><td>25 + 75 = <span class="answer">100</span></td></tr>
-                <tr><td>3 + 7 = <span class="answer">10</span></td><td>30 + 70 = <span class="answer">100</span></td><td>35 + 65 = <span class="answer">100</span></td></tr>
-                <tr><td>4 + 6 = <span class="answer">10</span></td><td>40 + 60 = <span class="answer">100</span></td><td>45 + 55 = <span class="answer">100</span></td></tr>
-            </table>
-        </div>
-
-        <div class="card">
-            <h2>2. 乘法捷徑：製造 100 與 1000</h2>
-            <table>
-                <tr><th>製造 100</th><th>製造 1000</th></tr>
-                <tr><td>20 × 5 = <span class="answer">100</span></td><td>125 × 8 = <span class="answer">1000</span></td></tr>
-                <tr><td>25 × 4 = <span class="answer">100</span></td><td>250 × 4 = <span class="answer">1000</span></td></tr>
-                <tr><td>50 × 2 = <span class="answer">100</span></td><td>500 × 2 = <span class="answer">1000</span></td></tr>
-            </table>
-        </div>
-
-        <div class="card interactive-box">
-            <h2>🎲 數感隨機抽考</h2>
-            <p id="quiz-question">點擊按鈕開始測驗！</p>
-            <input type="text" id="quiz-input" placeholder="輸入答案" onkeypress="handleQuizEnter(event)">
-            <button class="btn" style="background-color: var(--success-color);" onclick="checkQuiz()">送出答案</button>
-            <button class="btn" onclick="generateQuiz()">下一題</button>
-            <p id="quiz-result"></p>
-        </div>
-    </div>
-
-    <div id="finance" class="tab-content">
-        <div class="card grid-2">
-            <div>
-                <h2>3. 常見分數與小數 (投資佔比常用)</h2>
-                <table>
-                    <tr><th>分數</th><th>小數 / 百分比</th></tr>
-                    <tr><td>1/4</td><td class="answer">0.25 (25%)</td></tr>
-                    <tr><td>3/4</td><td class="answer">0.75 (75%)</td></tr>
-                    <tr><td>1/8</td><td class="answer">0.125 (12.5%)</td></tr>
-                    <tr><td>3/8</td><td class="answer">0.375 (37.5%)</td></tr>
-                    <tr><td>1/3</td><td class="answer">0.333 (33.3%)</td></tr>
-                </table>
-            </div>
-            <div>
-                <h2>4. 72 法則 (資產翻倍估算)</h2>
-                <table>
-                    <tr><th>年化報酬率</th><th>翻倍所需時間 (約)</th></tr>
-                    <tr><td>4%</td><td class="answer">18 年 (72/4)</td></tr>
-                    <tr><td>6%</td><td class="answer">12 年 (72/6)</td></tr>
-                    <tr><td>8%</td><td class="answer">9 年 (72/8)</td></tr>
-                    <tr><td>12%</td><td class="answer">6 年 (72/12)</td></tr>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div id="pro" class="tab-content">
-        <div class="card">
-            <h2>5. 電腦科學：2 的次方數</h2>
-            <table>
-                <tr><th>2¹~2⁵</th><th>2⁶~2¹⁰</th></tr>
-                <tr><td>2¹ = <span class="answer">2</span></td><td>2⁶ = <span class="answer">64</span></td></tr>
-                <tr><td>2² = <span class="answer">4</span></td><td>2⁷ = <span class="answer">128</span></td></tr>
-                <tr><td>2³ = <span class="answer">8</span></td><td>2⁸ = <span class="answer">256</span></td></tr>
-                <tr><td>2⁴ = <span class="answer">16</span></td><td>2⁹ = <span class="answer">512</span></td></tr>
-                <tr><td>2⁵ = <span class="answer">32</span></td><td>2¹⁰= <span class="answer">1024</span></td></tr>
-            </table>
-        </div>
-
-        <div class="card interactive-box">
-            <h2>📅 臨床與週期動態計算機 (精確週數計算)</h2>
-            <p>設定起始日與目標日，自動換算精確的週數與天數（格式支援 X.0 週）。</p>
-            <label>起始日期：<input type="date" id="date-start"></label>
-            <label style="margin-left:10px;">目標日期：<input type="date" id="date-end"></label>
-            <button class="btn" style="background-color: var(--accent-color); margin-top: 10px;" onclick="calculateWeeks()">計算週數</button>
-            <p id="calc-result"></p>
-        </div>
-    </div>
-
-    <script>
-        // --- 頁籤切換邏輯 ---
-        function openTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-
-        // --- 遮罩功能 (單字卡) ---
-        function toggleMask() {
-            document.body.classList.toggle('mask-mode');
-        }
-
-        // --- 隨機出題機邏輯 ---
-        const quizData = [
-            { q: "25 × 4", a: 100 }, { q: "125 × 8", a: 1000 },
-            { q: "15 + 85", a: 100 }, { q: "20 × 5", a: 100 },
-            { q: "75 × 4", a: 300 }, { q: "1/4 的小數是", a: 0.25 },
-            { q: "1/8 的百分比是", a: 12.5 }
-        ];
-        let currentQuiz = {};
-
-        function generateQuiz() {
-            currentQuiz = quizData[Math.floor(Math.random() * quizData.length)];
-            document.getElementById('quiz-question').innerText = `題目： ${currentQuiz.q} = ?`;
-            document.getElementById('quiz-input').value = '';
-            document.getElementById('quiz-result').innerText = '';
-            document.getElementById('quiz-input').focus();
-        }
-
-        function checkQuiz() {
-            const userAnswer = parseFloat(document.getElementById('quiz-input').value);
-            const resultEl = document.getElementById('quiz-result');
-            if (userAnswer === currentQuiz.a) {
-                resultEl.innerText = "✅ 答對了！太厲害了！";
-                resultEl.style.color = "var(--success-color)";
-            } else {
-                resultEl.innerText = `❌ 不對喔，正確答案是 ${currentQuiz.a}。再來一題！`;
-                resultEl.style.color = "#c0392b";
-            }
-        }
-
-        function handleQuizEnter(e) {
-            if(e.key === 'Enter') checkQuiz();
-        }
-
-        // --- 週期與週數計算機邏輯 ---
-        function calculateWeeks() {
-            const start = new Date(document.getElementById('date-start').value);
-            const end = new Date(document.getElementById('date-end').value);
-            const resultEl = document.getElementById('calc-result');
-
-            if (isNaN(start) || isNaN(end)) {
-                resultEl.innerText = "請選擇完整的日期。";
-                return;
-            }
-
-            const diffTime = end - start;
-            const diffDays = diffTime / (1000 * 60 * 60 * 24);
-            
-            if (diffDays < 0) {
-                resultEl.innerText = "目標日期不能早於起始日期喔！";
-                return;
-            }
-
-            const weeks = Math.floor(diffDays / 7);
-            const days = diffDays % 7;
-            
-            // 確保滿週時顯示 X.0 格式
-            let displayFormat = (days === 0) ? `${weeks}.0` : `${weeks} 週又 ${days} 天`;
-            
-            resultEl.innerText = `總相隔天數：${diffDays} 天 ➡️ 精確週數為：${displayFormat}`;
-        }
-
-        // 初始化一題
-        generateQuiz();
-    </script>
-</body>
-</html>
+<div class="card">
+    <h2>3. 完整分數、小數與百分比轉換</h2>
+    <table>
+        <tr>
+            <th>數字家族</th>
+            <th>分數</th>
+            <th>小數</th>
+            <th>百分比 (%)</th>
+        </tr>
+        <tr>
+            <td rowspan="2" style="font-weight:bold; background-color:#f9f9f9;">四分之一</td>
+            <td>1/4</td>
+            <td class="answer">0.25</td>
+            <td class="answer">25%</td>
+        </tr>
+        <tr>
+            <td>3/4</td>
+            <td class="answer">0.75</td>
+            <td class="answer">75%</td>
+        </tr>
+        <tr>
+            <td rowspan="4" style="font-weight:bold; background-color:#f9f9f9;">五分之一</td>
+            <td>1/5</td>
+            <td class="answer">0.2</td>
+            <td class="answer">20%</td>
+        </tr>
+        <tr>
+            <td>2/5</td>
+            <td class="answer">0.4</td>
+            <td class="answer">40%</td>
+        </tr>
+        <tr>
+            <td>3/5</td>
+            <td class="answer">0.6</td>
+            <td class="answer">60%</td>
+        </tr>
+        <tr>
+            <td>4/5</td>
+            <td class="answer">0.8</td>
+            <td class="answer">80%</td>
+        </tr>
+        <tr>
+            <td rowspan="4" style="font-weight:bold; background-color:#f9f9f9;">八分之一</td>
+            <td>1/8</td>
+            <td class="answer">0.125</td>
+            <td class="answer">12.5%</td>
+        </tr>
+        <tr>
+            <td>3/8</td>
+            <td class="answer">0.375</td>
+            <td class="answer">37.5%</td>
+        </tr>
+        <tr>
+            <td>5/8</td>
+            <td class="answer">0.625</td>
+            <td class="answer">62.5%</td>
+        </tr>
+        <tr>
+            <td>7/8</td>
+            <td class="answer">0.875</td>
+            <td class="answer">87.5%</td>
+        </tr>
+        <tr>
+            <td rowspan="2" style="font-weight:bold; background-color:#f9f9f9;">三分之一</td>
+            <td>1/3</td>
+            <td class="answer">0.333</td>
+            <td class="answer">33.3%</td>
+        </tr>
+        <tr>
+            <td>2/3</td>
+            <td class="answer">0.667</td>
+            <td class="answer">66.7%</td>
+        </tr>
+        <tr>
+            <td rowspan="2" style="font-weight:bold; background-color:#f9f9f9;">九分之一</td>
+            <td>1/9</td>
+            <td class="answer">0.111</td>
+            <td class="answer">11.1%</td>
+        </tr>
+        <tr>
+            <td>2/9</td>
+            <td class="answer">0.222</td>
+            <td class="answer">22.2%</td>
+        </tr>
+    </table>
+</div>
